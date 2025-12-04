@@ -1,0 +1,6 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY consumer/main.py .
+RUN pip install pika pandas numpy scikit-learn
+CMD ["python","main.py"]
