@@ -1,12 +1,13 @@
 ![alt text](image/task.png)
 
 #### Docker command:
+```zsh
 docker-compose up --build
+```
 #### Http request:
 http://localhost:8001/get_users?limit=5
 #### Docker Hub link:
 https://hub.docker.com/u/yukithekilla
-
 #### Docker build result:
 ![alt text](image/image1.png)
 #### Database example:
