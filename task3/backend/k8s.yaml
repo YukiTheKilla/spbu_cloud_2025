@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: music-player-backend
+  labels:
+    app: music-player-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: music-player-backend
+  template:
+    metadata:
+      labels:
+        app: music-player-backend
+    spec:
+      containers:
+      - name: backend
+        image: music-player-backend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data
+        env:
+        - name: FLASK_ENV
+          value: "production"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: data-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: music-player-backend-service
+spec:
+  type: ClusterIP
+  selector:
+    app: music-player-backend
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000

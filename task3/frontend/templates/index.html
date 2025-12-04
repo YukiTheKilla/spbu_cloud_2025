@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music Player</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        button { margin: 5px; padding: 10px 15px; }
+        audio { width: 100%; margin: 10px 0; }
+        .track-info { margin: 10px 0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🎵 Simple Music Player</h1>
+
+    {% if current %}
+        <div class="track-info">
+            Now playing: {{ current.artist }} — {{ current.title }}
+        </div>
+        <audio controls>
+            <source src="/api{{ current.stream_url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+        <div>
+            <button onclick="fetch('/api/previous').then(r => r.json()).then(update)">⏮</button>
+            <button onclick="fetch('/api/next').then(r => r.json()).then(update)">⏭</button>
+            <button onclick="fetch('/api/shuffle', {method: 'POST'}).then(r => r.json()).then(update)">Shuffle</button>
+            <button onclick="fetch('/api/sequential', {method: 'POST'}).then(r => r.json()).then(update)">Circle</button>
+        </div>
+
+    <script>
+    function update(data) {
+        if (data.track) {
+            const info = document.querySelector('.track-info');
+            const audio = document.querySelector('audio');
+            info.textContent = `Now playing: ${data.track.artist} — ${data.track.title}`;
+            audio.src = '/api' + data.track.stream_url;
+            audio.load();
+            // Attempt to play automatically after user interaction
+            audio.play().catch(e => {
+                console.warn("Autoplay blocked:", e);
+            });
+        }
+    }
+    </script>
+    {% else %}
+        <p>No current track. Is the backend running with music files?</p>
+    {% endif %}
+</body>
+</html>

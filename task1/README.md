@@ -1,3 +1,3 @@
-![alt text](task.png)
+![alt text](image/task.png)
 #### Result:
-![alt text](image.png)
+![alt text](image/image.png)
